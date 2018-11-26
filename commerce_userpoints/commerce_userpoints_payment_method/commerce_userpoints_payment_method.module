@@ -20,10 +20,8 @@ function commerce_userpoints_payment_method_commerce_payment_method_info() {
   // Set default conversion rates for each enabled currency.
   // We use a default rate of 1 for commerce userpoints currencies, or 100
   // for normal currencies.
-  if( function_exists('commerce_currencies') ) {
-    foreach (commerce_currencies(TRUE) as $key => $currency) {
-      $payment_methods['commerce_userpoints']['settings']['currencies'][$key] = array_key_exists($key, $commerce_userpoints_currencies) ? 1 : 100;
-    }
+  foreach (commerce_currencies(TRUE) as $key => $currency) {
+    $payment_methods['commerce_userpoints']['settings']['currencies'][$key] = array_key_exists($key, $commerce_userpoints_currencies) ? 1 : 100;
   }
   return $payment_methods;
 }
@@ -167,8 +165,6 @@ function commerce_userpoints_payment_method_submit_form($payment_method, $pane_v
       t('Current !points', userpoints_translation()),
       theme('cu_points', array('points' => $current_points)),
     ),
-    /* junwei */
-    /*
     array(
       t('!Points credit limit', userpoints_translation()),
       theme('cu_points', array('points' => $credit_limit)),
@@ -177,7 +173,6 @@ function commerce_userpoints_payment_method_submit_form($payment_method, $pane_v
       t('Exchange rate'),
       theme('cu_points', array('points' => $exchange_rate)),
     ),
-    */
     array(
       t('Required !points', userpoints_translation()),
       '<strong>' . theme('cu_points', array('points' => $required_points)) . '</strong>',
@@ -194,7 +189,7 @@ function commerce_userpoints_payment_method_submit_form($payment_method, $pane_v
     '#header' => $header,
   );
 
-  if ($resulting_balance >= $credit_limit) {
+  if ($resulting_balance > $credit_limit) {
     $form['validation'] = array(
       '#type' => 'item',
       '#markup' => t('You have enough !points!', userpoints_translation()),
